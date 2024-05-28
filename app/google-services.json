@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "111249823663",
+    "project_id": "technical-test-dea31",
+    "storage_bucket": "technical-test-dea31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111249823663:android:6d2acd54f3cc3d99a5815a",
+        "android_client_info": {
+          "package_name": "mx.com.lgonzalez.pruebatecnica"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtSriivKSZuKXYUpumZfLrJ4awu1eHkkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
