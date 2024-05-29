@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import mx.com.lgonzalez.pruebatecnica.presentation.composables.CustomColorPicker
 import mx.com.lgonzalez.pruebatecnica.presentation.composables.CustomImage
 import mx.com.lgonzalez.pruebatecnica.ui.theme.LocalSpacing
 
@@ -35,6 +36,25 @@ fun FirstActivityScreen(
 
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    CustomColorPicker(
+        isVisible = state.isTextColorPickerVisible,
+        onDismiss = {
+            viewModel.onEvent(FirstActivityEvent.OnTextColorPickerVisibleChange(false))
+        }
+    ) {
+        viewModel.onEvent(FirstActivityEvent.OnTextColorChange(it))
+    }
+
+    CustomColorPicker(
+        isVisible = state.isBackgroundColorPickerVisible,
+        onDismiss = {
+            viewModel.onEvent(FirstActivityEvent.OnBackgroundColorPickerVisibleChange(false))
+        }
+    ) {
+        viewModel.onEvent(FirstActivityEvent.OnBackgroundChange(it))
+    }
+
     Scaffold {
         FirstActivityContent(
             modifier = Modifier
@@ -63,7 +83,6 @@ fun FirstActivityContent(
         Manifest.permission.READ_EXTERNAL_STORAGE
 
 
-
     val launcherGallery =
         rememberLauncherForActivityResult(
             contract =
@@ -80,6 +99,10 @@ fun FirstActivityContent(
         }
 
     val localSpacing = LocalSpacing.current
+
+
+
+
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
@@ -96,7 +119,9 @@ fun FirstActivityContent(
                     .size(200.dp),
                 url = state.url,
                 initials = state.initials,
-                uri = state.placerHolder
+                uri = state.placerHolder,
+                textColor = state.textColor,
+                backgroundColor = state.backgroundColor
             )
 
             OutlinedTextField(
@@ -138,7 +163,11 @@ fun FirstActivityContent(
 
             Button(
                 onClick = {
-                    if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED)
+                    if (ContextCompat.checkSelfPermission(
+                            context,
+                            permission
+                        ) == PackageManager.PERMISSION_GRANTED
+                    )
                         launcherGallery.launch("image/*")
                     else
                         permissionLauncher.launch(permission)
@@ -148,6 +177,22 @@ fun FirstActivityContent(
             ) {
                 Text(text = "Agregar placeholder")
             }
+            Button(
+                onClick = {
+                    onEvent(FirstActivityEvent.OnTextColorPickerVisibleChange(true))
+                }
+            ) {
+                Text(text = "Cambiar color de texto")
+            }
+            Button(
+                onClick = {
+                    onEvent(FirstActivityEvent.OnBackgroundColorPickerVisibleChange(true))
+                }
+            ) {
+                Text(text = "Cambiar color de fondo")
+            }
+
+
         }
 
     }

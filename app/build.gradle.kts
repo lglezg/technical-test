@@ -92,6 +92,8 @@ dependencies {
     implementation(platform(Firebase.firebaseBom))
     implementation(Firebase.firestore)
 
+    implementation(ColorPicker.colorPicker)
+
     testImplementation(Testing.junit4)
     androidTestImplementation(Testing.extJunit)
     androidTestImplementation(Testing.espresso)
