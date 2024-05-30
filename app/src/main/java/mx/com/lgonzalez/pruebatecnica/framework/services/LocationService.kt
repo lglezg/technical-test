@@ -21,7 +21,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import mx.com.lgonzalez.pruebatecnica.R
+import mx.com.lgonzalez.pruebatecnica.domain.models.LocationData
 import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetLocationUseCase
+import mx.com.lgonzalez.pruebatecnica.domain.usecases.SaveLocationUseCase
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import javax.inject.Inject
@@ -30,6 +32,7 @@ import javax.inject.Inject
 class LocationService : Service() {
 
     @Inject lateinit var getLocationUseCase: GetLocationUseCase
+    @Inject lateinit var saveLocationUseCase: SaveLocationUseCase
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     companion object {
@@ -65,7 +68,15 @@ class LocationService : Service() {
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
                 location?.let {
-                    Log.e("PRB", "start: ${location.latitude}, ${location.longitude} ${getCurrentDateTime()}", )
+                    val dateTime = getCurrentDateTime()
+                    Log.e("PRB", "start: ${location.latitude}, ${location.longitude} $dateTime", )
+                    saveLocationUseCase.invoke(
+                        LocationData(
+                            latitude = location.latitude,
+                            longitude = location.longitude,
+                            dateTime = dateTime,
+                        )
+                    )
                 }
 
             }
@@ -94,7 +105,6 @@ class LocationService : Service() {
 
         return NotificationCompat.Builder(this, notificationChannelId)
             .setContentTitle("Tracking location...")
-            .setContentText("Location:")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(true)
             .build()

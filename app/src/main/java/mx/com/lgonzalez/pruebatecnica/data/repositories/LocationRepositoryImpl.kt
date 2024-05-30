@@ -10,16 +10,20 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import mx.com.lgonzalez.pruebatecnica.domain.models.LocationData
 import mx.com.lgonzalez.pruebatecnica.domain.repositories.LocationRepository
 import javax.inject.Inject
 
 class LocationRepositoryImpl @Inject constructor(
     private val fusedLocationProviderClient: FusedLocationProviderClient,
-    private val application: Application
+    private val application: Application,
+    private val firestore: FirebaseFirestore
 ) : LocationRepository{
     @SuppressLint("MissingPermission")
     override fun getCurrentLocation(): Flow<Location?> {
@@ -54,5 +58,9 @@ class LocationRepositoryImpl @Inject constructor(
                 fusedLocationProviderClient.removeLocationUpdates(locationCallback)
             }
         }
+    }
+
+    override suspend fun saveLocation(locationData: LocationData) {
+        firestore.collection("locations").add(locationData).await()
     }
 }

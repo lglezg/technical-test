@@ -9,6 +9,8 @@ import dagger.hilt.android.scopes.ServiceScoped
 import mx.com.lgonzalez.pruebatecnica.domain.repositories.LocationRepository
 import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetLocationUseCase
 import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetLocationUseCaseImpl
+import mx.com.lgonzalez.pruebatecnica.domain.usecases.SaveLocationUseCase
+import mx.com.lgonzalez.pruebatecnica.domain.usecases.SaveLocationUseCaseImpl
 
 
 @Module
@@ -20,5 +22,12 @@ object ServiceModule {
         locationRepository: LocationRepository
     ): GetLocationUseCase {
         return GetLocationUseCaseImpl(locationRepository)
+    }
+    @Provides
+    @ServiceScoped
+    fun provideSaveLocationUseCase(
+        locationRepository: LocationRepository
+    ): SaveLocationUseCase {
+        return SaveLocationUseCaseImpl(locationRepository)
     }
 }
