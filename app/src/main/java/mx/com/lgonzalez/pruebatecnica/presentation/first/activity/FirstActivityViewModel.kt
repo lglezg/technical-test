@@ -1,6 +1,7 @@
 package mx.com.lgonzalez.pruebatecnica.presentation.first.activity
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,12 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetInitialsUseCase
+import mx.com.lgonzalez.pruebatecnica.utils.extensions.initials
 import javax.inject.Inject
 
 @HiltViewModel
 class FirstActivityViewModel @Inject constructor(
-    private val getInitialsUseCase: GetInitialsUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FirstActivityState())
@@ -55,13 +55,7 @@ class FirstActivityViewModel @Inject constructor(
     }
 
     private fun onTextChange(text: String) {
-        job?.cancel()
         _state.update { it.copy(text = text) }
-        job = viewModelScope.launch {
-            delay(2000)
-            val initials = getInitialsUseCase.invoke(text)
-            _state.update { it.copy(initials = initials) }
-        }
     }
 
     private fun onPlaceHolderChange(uri: Uri) {

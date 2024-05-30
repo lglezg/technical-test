@@ -7,13 +7,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import mx.com.lgonzalez.pruebatecnica.domain.models.PokemonDetails
+import mx.com.lgonzalez.pruebatecnica.domain.models.Pokemon
 import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetPokemonsUseCase
+import mx.com.lgonzalez.pruebatecnica.domain.usecases.UpdatePokemonUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class SecondActivityViewModel @Inject constructor(
-    private val getPokemonsUseCase: GetPokemonsUseCase
+    private val getPokemonsUseCase: GetPokemonsUseCase,
+    private val updatePokemonUseCase: UpdatePokemonUseCase
 ): ViewModel(){
 
     private val _state = MutableStateFlow(SecondActivityState())
@@ -28,13 +30,30 @@ class SecondActivityViewModel @Inject constructor(
     fun onEvent(event: SecondActivityEvent){
         when(event){
             is SecondActivityEvent.LoadMore -> loadMore()
+            is SecondActivityEvent.FavoritePokemonChange -> favoritePokemonChange(event.pokemon)
+        }
+    }
+
+    private fun favoritePokemonChange(pokemon: Pokemon) = viewModelScope.launch {
+        updatePokemonUseCase.invoke(pokemon.copy(isFavorite = !pokemon.isFavorite))
+        val pokemons = _state.value.pokemons
+        _state.update { lastState ->
+            lastState.copy(
+                pokemons = pokemons.map {
+                    if (it.id == pokemon.id) {
+                        it.copy(isFavorite = !it.isFavorite)
+                    } else {
+                        it
+                    }
+                }
+            )
         }
     }
 
     private fun loadMore() = viewModelScope.launch{
         offset += 25
         onIsLoadingChange(true)
-        val newList = mutableListOf<PokemonDetails?>()
+        val newList = mutableListOf<Pokemon>()
         val pokemonsState = _state.value.pokemons
         newList.addAll(pokemonsState)
         val pokemons = getPokemonsUseCase.invoke(25, offset = offset)

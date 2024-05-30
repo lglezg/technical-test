@@ -1,4 +1,4 @@
-package mx.com.lgonzalez.pruebatecnica.domain.models
+package mx.com.lgonzalez.pruebatecnica.data.models
 
 data class PokemonDetails(
     val height: Int,

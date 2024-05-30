@@ -19,11 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mx.com.lgonzalez.pruebatecnica.R
 import mx.com.lgonzalez.pruebatecnica.presentation.composables.CustomImage
+import mx.com.lgonzalez.pruebatecnica.presentation.second.activity.SecondActivityEvent
 import mx.com.lgonzalez.pruebatecnica.ui.theme.LocalSpacing
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,14 +63,17 @@ fun ThirdActivityScreen(
                 .padding(it)
                 .fillMaxSize(),
             state = state
-        )
+        ){ event ->
+            viewModel.onEvent(event)
+        }
     }
 }
 
 @Composable
 fun ThirdActivityContent(
     modifier: Modifier,
-    state: ThirdActivityState
+    state: ThirdActivityState,
+    onEvent: (ThirdActivityEvent) -> Unit
 ) {
 
     val localSpacing = LocalSpacing.current
@@ -91,6 +96,22 @@ fun ThirdActivityContent(
                 verticalArrangement = Arrangement.Center,
 
                 ) {
+
+                IconButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = { onEvent(ThirdActivityEvent.FavoritePokemonChange) }
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            id = if (state.isFavorite)
+                                R.drawable.baseline_favorite
+                            else
+                                R.drawable.baseline_favorite_border
+                        ),
+                        contentDescription = null,
+                        tint = Color.Red
+                    )
+                }
                 CustomImage(
                     modifier = Modifier
                         .size(150.dp)
@@ -113,7 +134,7 @@ fun ThirdActivityContent(
                     style = MaterialTheme.typography.titleLarge
                 )
                 state.types.forEach {type ->
-                    Text(text = type.type.name)
+                    Text(text = type)
                 }
             }
         }

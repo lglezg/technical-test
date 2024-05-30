@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import mx.com.lgonzalez.pruebatecnica.R
+import mx.com.lgonzalez.pruebatecnica.utils.extensions.initials
 
 @Composable
 fun CustomImage(
@@ -55,7 +56,7 @@ fun CustomImage(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = initials,
+                    text = initials.initials(),
                     style = MaterialTheme.typography.titleLarge,
                     color = textColor
                 )

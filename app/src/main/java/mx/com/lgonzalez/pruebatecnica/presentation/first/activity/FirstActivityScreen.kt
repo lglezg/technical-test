@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mx.com.lgonzalez.pruebatecnica.presentation.composables.CustomColorPicker
 import mx.com.lgonzalez.pruebatecnica.presentation.composables.CustomImage
 import mx.com.lgonzalez.pruebatecnica.ui.theme.LocalSpacing
+import mx.com.lgonzalez.pruebatecnica.utils.extensions.initials
 
 @Composable
 fun FirstActivityScreen(
@@ -118,7 +119,7 @@ fun FirstActivityContent(
                     .padding(bottom = localSpacing.spaceSmall)
                     .size(200.dp),
                 url = state.url,
-                initials = state.initials,
+                initials = state.text,
                 uri = state.placerHolder,
                 textColor = state.textColor,
                 backgroundColor = state.backgroundColor

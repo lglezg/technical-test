@@ -1,8 +1,7 @@
 package mx.com.lgonzalez.pruebatecnica.data.network
 
-import androidx.compose.ui.geometry.Offset
-import mx.com.lgonzalez.pruebatecnica.domain.models.PokemonDetails
-import mx.com.lgonzalez.pruebatecnica.domain.models.PokemonList
+import mx.com.lgonzalez.pruebatecnica.data.models.PokemonDetails
+import mx.com.lgonzalez.pruebatecnica.data.models.PokemonList
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,16 +30,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import mx.com.lgonzalez.pruebatecnica.domain.models.PokemonDetails
+import mx.com.lgonzalez.pruebatecnica.R
+import mx.com.lgonzalez.pruebatecnica.data.models.PokemonDetails
+import mx.com.lgonzalez.pruebatecnica.domain.models.Pokemon
 import mx.com.lgonzalez.pruebatecnica.presentation.composables.CustomImage
 import mx.com.lgonzalez.pruebatecnica.ui.theme.LocalSpacing
 
 @Composable
 fun SecondActivityScreen(
     viewModel: SecondActivityViewModel,
-    navigateTo:  (String) -> Unit
+    navigateTo: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -72,7 +80,6 @@ private fun SecondActivityContent(
     }
 
     LaunchedEffect(reachedBottom) {
-        Log.e("PRB", "SecondActivityContent: $reachedBottom", )
         if (reachedBottom) onEvent(SecondActivityEvent.LoadMore)
     }
     LazyColumn(
@@ -82,15 +89,16 @@ private fun SecondActivityContent(
     ) {
         items(
             items = state.pokemons,
-            key = { item: PokemonDetails? ->  item!!.id}
+            key = { item: Pokemon? -> item!!.id }
         ) { pokemonDetails ->
             pokemonDetails?.let {
                 PokemonCard(
                     modifier = Modifier
                         .padding(all = localSpacing.spaceSmall)
                         .fillMaxWidth(),
-                    pokemonDetails = it
-                ) {name ->
+                    pokemonDetails = pokemonDetails,
+                    onEvent = onEvent
+                ) { name ->
                     navigateTo(name)
                 }
             }
@@ -115,33 +123,54 @@ private fun SecondActivityContent(
 @Composable
 fun PokemonCard(
     modifier: Modifier,
-    pokemonDetails: PokemonDetails,
-    onClick: (String) -> Unit
+    pokemonDetails: Pokemon,
+    onEvent: (SecondActivityEvent) -> Unit,
+    onClick: (String) -> Unit,
 ) {
     val localSpacing = LocalSpacing.current
     Card(
         modifier = modifier
-            .height(100.dp)
+            .wrapContentHeight()
             .clickable { onClick(pokemonDetails.name) },
         shape = MaterialTheme.shapes.small
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CustomImage(
+        Column {
+            IconButton(
+                modifier = Modifier.align(Alignment.End),
+                onClick = { onEvent(SecondActivityEvent.FavoritePokemonChange(pokemonDetails)) }
+            ) {
+                Icon(
+                    painter = painterResource(
+                        id = if (pokemonDetails.isFavorite)
+                            R.drawable.baseline_favorite
+                        else
+                            R.drawable.baseline_favorite_border
+                    ),
+                    contentDescription = null,
+                    tint = Color.Red
+                )
+            }
+            Row(
                 modifier = Modifier
-                    .padding(end = localSpacing.spaceSmall)
-                    .size(50.dp),
-                url = pokemonDetails.sprites.frontDefault,
-                initials = pokemonDetails.name,
-                uri = null
-            )
-            Text(
-                text = pokemonDetails.name,
-                style = MaterialTheme.typography.bodyLarge
-            )
+                    .padding(bottom = localSpacing.spaceMedium)
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                CustomImage(
+                    modifier = Modifier
+                        .padding(end = localSpacing.spaceSmall)
+                        .size(100.dp),
+                    url = pokemonDetails.urlImage,
+                    initials = pokemonDetails.name,
+                    uri = null
+                )
+                Text(
+                    text = pokemonDetails.name,
+                    style = MaterialTheme.typography.displaySmall
+                )
+            }
         }
     }
 
