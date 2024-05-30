@@ -93,6 +93,7 @@ dependencies {
     implementation(Firebase.firestore)
 
     implementation(ColorPicker.colorPicker)
+    implementation(ConstraintLayout.constraintLayout)
 
     testImplementation(Testing.junit4)
     androidTestImplementation(Testing.extJunit)

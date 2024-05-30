@@ -59,8 +59,7 @@ class LocationService : Service() {
     }
 
     private fun start() {
-        Toast.makeText(this, "Inicie...", Toast.LENGTH_SHORT).show()
-
+        
 
         val notification = createNotification()
 

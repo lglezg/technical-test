@@ -7,4 +7,5 @@ import mx.com.lgonzalez.pruebatecnica.domain.models.LocationData
 interface LocationRepository {
     fun getCurrentLocation(): Flow<Location?>
     suspend fun saveLocation(locationData: LocationData)
+    suspend fun getLocations():List<LocationData>
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationManager
 import android.os.Looper
+import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -62,5 +63,16 @@ class LocationRepositoryImpl @Inject constructor(
 
     override suspend fun saveLocation(locationData: LocationData) {
         firestore.collection("locations").add(locationData).await()
+    }
+
+    override suspend fun getLocations(): List<LocationData> {
+        return try {
+            val snapshot = firestore.collection("locations").get().await()
+            Log.e("PRB", "getLocations: ${snapshot.documents}", )
+            snapshot.documents.mapNotNull { it.toObject(LocationData::class.java) }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
     }
 }

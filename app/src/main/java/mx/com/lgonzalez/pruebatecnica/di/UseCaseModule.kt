@@ -4,8 +4,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ServiceScoped
 import dagger.hilt.android.scopes.ViewModelScoped
+import mx.com.lgonzalez.pruebatecnica.domain.repositories.LocationRepository
 import mx.com.lgonzalez.pruebatecnica.domain.repositories.PokemonRepository
+import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetLocationsUseCase
+import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetLocationsUseCaseImpl
 import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetPokemonDetailsUseCase
 import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetPokemonDetailsUseCaseImpl
 import mx.com.lgonzalez.pruebatecnica.domain.usecases.GetPokemonsUseCase
@@ -40,5 +44,13 @@ object UseCaseModule {
         pokemonRepository: PokemonRepository
     ): UpdatePokemonUseCase {
         return UpdatePokemonUseCaseImpl(pokemonRepository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetLocationsUseCase(
+        locationRepository: LocationRepository
+    ): GetLocationsUseCase {
+        return GetLocationsUseCaseImpl(locationRepository)
     }
 }

@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import mx.com.lgonzalez.pruebatecnica.presentation.first.activity.FirstActivityScreen
+import mx.com.lgonzalez.pruebatecnica.presentation.fourth.activity.FourthActivityScreen
 import mx.com.lgonzalez.pruebatecnica.presentation.second.activity.SecondActivityScreen
 import mx.com.lgonzalez.pruebatecnica.presentation.third.activity.ThirdActivityScreen
 
@@ -74,9 +75,8 @@ fun TechnicalTestNavigation() {
                     navController.popBackStack()
                 }
             }
-
-            composable(Screens.FourthActivity.route,) {
-                FirstActivityScreen(viewModel = hiltViewModel())
+            composable(Screens.FourthActivity.route) {
+                FourthActivityScreen(viewModel = hiltViewModel())
             }
         }
     }
